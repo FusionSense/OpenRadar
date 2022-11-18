@@ -42,10 +42,10 @@ class CMD(Enum):
 CONFIG_HEADER = '5aa5'
 CONFIG_STATUS = '0000'
 CONFIG_FOOTER = 'aaee'
-ADC_PARAMS = {'chirps': 128,  # 32
+ADC_PARAMS = {'chirps': 192,  # 32
               'rx': 4,
               'tx': 3,
-              'samples': 128,
+              'samples': 512,
               'IQ': 2,
               'bytes': 2}
 # STATIC
