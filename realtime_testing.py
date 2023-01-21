@@ -1,11 +1,23 @@
 from pathlib import Path
+from matplotlib import cbook
+from matplotlib import cm
+from matplotlib.colors import LightSource
 import matplotlib.pyplot as plt
 import mmwave as mm
 import mmwave.dsp as dsp
 import numpy as np
 from mmwave.dataloader import DCA1000
 from mmwave.dsp.utils import Window
-import time
+from datetime import datetime
+
+
+
+def remove_files(num_frames):
+    """
+    Removes test files
+    """
+    for i in range(250):
+        Path(f'temp{i}.png').unlink()
 
 
 numChirpsPerFrame = 192
@@ -28,9 +40,14 @@ num_frames = 1
 # print(adc_data[0::2])
 dca = DCA1000()
 
+times = []
+figs = [70]
+axs = [70] 
 while True:
-    start = time.time()
-    adc_data = dca.read()
+    
+    start = datetime.utcnow() # Start Timer
+    adc_data = dca.read() # Read in ADC data from the DCA board
+
     # save_str = "{0}{1}.txt".format("adc_data",num_frames)
     # np.savetxt(save_str,adc_data)
     #frame = dca.organize(adc_data, numChirpsPerFrame, numRxAntennas, numADCSamples)
@@ -71,7 +88,9 @@ while True:
     num_frames = num_frames + 1
 
 
-    plt.imshow(normalized,aspect='auto', vmin = -40)
+
+    # *************Start of Plotting**************
+    plt.imshow(normalized, origin='lower', aspect='auto',vmin=-90)
     range_res = 0.05
     vel_res = 1
 
@@ -80,15 +99,48 @@ while True:
 
     rangeAxis = np.arange(0,512,range_step)*range_res
     velocityAxis = np.arange(-64/2,64/2,vel_step)*vel_res
-
+    
     plt.yticks(np.arange(0,512,range_step),rangeAxis)
     plt.xticks(np.arange(0,64,vel_step),velocityAxis)
-    plt.title(label=num_frames)
+    #plt.xlabel(labelpad='Velocity (m/s)')
+    #plt.ylabel(labelpad='Distance (m)')
+    plt.title(label=num_frames-1)
     plt.colorbar()
-    plt.pause(0.0001)
+    #plt.show()
+    plt.pause(0.00001)
+    #plt.savefig(f'temp{num_frames-1}.png')
     plt.clf()
-    end = time.time()
-    print(end-start)
+
+    # ************
+
+
+    # range_res = 0.05
+    # vel_res = 1
+    # range_step = 50
+    # vel_step = 8
+    # rangeAxis = np.arange(0,512,range_step)*range_res
+    # velocityAxis = np.arange(-64/2,64/2,vel_step)*vel_res
+
+
+    # plt.imshow(normalized, origin = 'lower', aspect = 'auto')
+    # plt.yticks(np.arange(0,512,range_step),rangeAxis)
+    # plt.xticks(np.arange(0,64,vel_step),velocityAxis)
+    # plt.title(label=num_frames)
+    # #plt.colorbar()
+    # plt.show()
+    # plt.pause(0.0001)
+    # plt.clf()
     
+    # plt.pause(0.0001)
+    # plt.clf()
+
+    # plt.savefig(f'temp{i}.png')
+    end = datetime.utcnow()
+    times.append((end-start).microseconds)
+    if num_frames == 100:
+        print(np.mean(times)/1e6)        
+    
+print(np.mean(times)/1e6)
+#remove_files(70)
 
 
