@@ -45,7 +45,7 @@ figs = [70]
 axs = [70] 
 while True:
     
-    start = datetime.utcnow() # Start Timer
+    
     adc_data = dca.read() # Read in ADC data from the DCA board
 
     # save_str = "{0}{1}.txt".format("adc_data",num_frames)
@@ -53,7 +53,7 @@ while True:
     #frame = dca.organize(adc_data, numChirpsPerFrame, numRxAntennas, numADCSamples)
 
     # ------------What organize does-------START---------
-
+    start = datetime.utcnow() # Start Timer
     ret = np.zeros(len(adc_data) // 2, dtype=complex)
 
     # Separate IQ data of all 4 receive antennas 
@@ -83,7 +83,9 @@ while True:
     det_matrix, aoa_input = dsp.doppler_processing(radar_cube, num_tx_antennas=3,clutter_removal_enabled=False)
 
     det_matrix_vis = np.fft.fftshift(det_matrix, axes=1)
+    
     normalized = det_matrix_vis-det_matrix_vis.max()
+    end = datetime.utcnow()
     print(num_frames)
     num_frames = num_frames + 1
 
@@ -135,7 +137,7 @@ while True:
     # plt.clf()
 
     # plt.savefig(f'temp{i}.png')
-    end = datetime.utcnow()
+    
     times.append((end-start).microseconds)
     if num_frames == 100:
         print(np.mean(times)/1e6)        
