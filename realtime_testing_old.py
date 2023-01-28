@@ -85,7 +85,6 @@ while True:
     det_matrix_vis = np.fft.fftshift(det_matrix, axes=1)
     
     normalized = det_matrix_vis-det_matrix_vis.max()
-    end = datetime.utcnow()
     print(num_frames)
     num_frames = num_frames + 1
 
@@ -93,17 +92,17 @@ while True:
 
     # *************Start of Plotting**************
     plt.imshow(normalized, origin='lower', aspect='auto',vmin=-90)
+
     range_res = 0.05
     vel_res = 1
-
     range_step = 50
     vel_step = 8
-
     rangeAxis = np.arange(0,512,range_step)*range_res
     velocityAxis = np.arange(-64/2,64/2,vel_step)*vel_res
-    
     plt.yticks(np.arange(0,512,range_step),rangeAxis)
     plt.xticks(np.arange(0,64,vel_step),velocityAxis)
+
+    
     #plt.xlabel(labelpad='Velocity (m/s)')
     #plt.ylabel(labelpad='Distance (m)')
     plt.title(label=num_frames-1)
@@ -137,7 +136,7 @@ while True:
     # plt.clf()
 
     # plt.savefig(f'temp{i}.png')
-    
+    end = datetime.utcnow()
     times.append((end-start).microseconds)
     if num_frames == 100:
         print(np.mean(times)/1e6)        
